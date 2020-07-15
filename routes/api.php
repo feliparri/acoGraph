@@ -22,6 +22,10 @@ Route::post('/login','AuthController@login');
 Route::post('/register','AuthController@register');
 Route::middleware('auth:api')->post('/logout','AuthController@logout');
 
+Route::middleware('auth:api')->get('/getResumenLote','ControllerReports@getResumenLote');
+//Route::get('/getResumenLote','ControllerReports@getResumenLote');
+
+
 //test foo
 Route::get('foo', function () {
     return 'Hello World';
