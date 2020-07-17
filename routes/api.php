@@ -22,7 +22,7 @@ Route::post('/login','AuthController@login');
 Route::post('/register','AuthController@register');
 Route::middleware('auth:api')->post('/logout','AuthController@logout');
 
-Route::middleware('auth:api')->get('/getResumenLote','ControllerReports@getResumenLote');
+Route::middleware('auth:api')->post('/getResumenLote','ControllerReports@getResumenLote');
 //Route::get('/getResumenLote','ControllerReports@getResumenLote');
 
 
