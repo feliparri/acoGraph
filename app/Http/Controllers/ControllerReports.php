@@ -67,5 +67,20 @@ class ControllerReports extends Controller
 
         return response()->json($lote);
     }
+    public function getDataCosolidadoProcesosByFilters(Request $request){
+        // return isset($request->filter['from']);
+        $lote = \App\VResumenLote::groupBy('mes')
+        ->selectRaw('sum(peso_neto) as peso, MONTH(fecha_cosecha) mes')
+        ->get();
+        #select sum(peso_neto), MONTH(fecha_cosecha) from v_resumen_lote vrl group by MONTH(fecha_cosecha) order by MONTH(fecha_cosecha) asc
+        if(isset($request->filter['from'])){
+            $lote = $lote->where('fecha','>', $request->filter['from']);
+        }
+        if(isset($request->filter['to'])){
+            $lote = $lote->where('fecha','<', $request->filter['to']);
+        }
+
+        return response()->json($lote);
+    }
 
 }
