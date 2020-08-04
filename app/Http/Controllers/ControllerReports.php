@@ -36,38 +36,6 @@ class ControllerReports extends Controller
         return response()->json($lote->paginate($request->rowsPerPage, ['*'], 'page', $request->page));
     }
 
-    public function getPieChartData(Request $request){
-        return isset($request->filter['from']);
-        $lote = \App\VResumenLote::groupBy('especie')
-        ->selectRaw('especie, sum(peso_neto) as sum')
-        ->get();
-
-        if(isset($request->filter['from'])){
-            $lote = $lote->where('fecha','>', $request->filter['from']);
-        }
-        if(isset($request->filter['to'])){
-            $lote = $lote->where('fecha','<', $request->filter['to']);
-        }
-
-        return response()->json($lote);
-    }
-
-    public function getPieChartDataByCodVariedad(Request $request){
-        // return isset($request->filter['from']);
-        $lote = \App\VResumenLote::groupBy('cod_variedad')
-        ->selectRaw('count(cod_variedad) as count, cod_variedad ')
-        ->get();
-
-        if(isset($request->filter['from'])){
-            $lote = $lote->where('fecha','>', $request->filter['from']);
-        }
-        if(isset($request->filter['to'])){
-            $lote = $lote->where('fecha','<', $request->filter['to']);
-        }
-
-        return response()->json($lote);
-    }
-
     public function getVariedades(Request $request){
         // return isset($request->filter['from']);
         $lote = \App\VResumenLote::groupBy('variedad')
@@ -100,12 +68,12 @@ class ControllerReports extends Controller
         return response()->json($lote);
     }
 
-    /* public function getPieChartDataByPesoMes(Request $request){
+    /*public function getPieChartDataByCodVariedad(Request $request){
         // return isset($request->filter['from']);
-        $lote = \App\VResumenLote::groupBy('mes')
-        ->selectRaw('sum(peso_neto) as peso, MONTH(fecha_cosecha) mes')
+        $lote = \App\VResumenLote::groupBy('cod_variedad')
+        ->selectRaw('count(cod_variedad) as count, cod_variedad ')
         ->get();
-        #select sum(peso_neto), MONTH(fecha_cosecha) from v_resumen_lote vrl group by MONTH(fecha_cosecha) order by MONTH(fecha_cosecha) asc
+
         if(isset($request->filter['from'])){
             $lote = $lote->where('fecha','>', $request->filter['from']);
         }
@@ -114,7 +82,61 @@ class ControllerReports extends Controller
         }
 
         return response()->json($lote);
-    } */
+    }*/
+
+    public function getPieChartDataByCodVariedadInv(Request $request){
+        //return $request['filterOne'];
+        $lote = \App\VResumenLote::groupBy('variedad')
+        ->selectRaw('variedad AS VARIEDAD, sum(k_disp) as "KILOS_INVENTARIO"');
+        
+        if(isset($request['from'])){
+            $lote = $lote->where('fecha','>', $request['from']);
+        }
+        if(isset($request['to'])){
+            $lote = $lote->where('fecha','<', $request['to']);
+        }
+        if(isset($request['filterOne'])){
+            if($request['filterOne']=='PRODUCTOR'){
+                if($request['filterTwo']!='todo'){
+                    $lote = $lote->where('productor','like', '%'.$request['filterTwo'].'%');
+                }
+            }
+            /*if($request['filterOne']=='VARIEDAD'){
+                if(isset($request['filterTwo'])){
+                    $lote = $lote->where('variedad','like', '%'.$request['filterTwo'].'%');
+                }
+            }*/
+        }
+
+        return response()->json($lote->get());
+    }
+
+    public function getPieChartDataByCodVariedad(Request $request){
+        //return $request['filterOne'];
+        $lote = \App\VResumenLote::groupBy('variedad')
+        ->selectRaw('variedad AS VARIEDAD, sum(k_pesados) as "KILOS_RECEPCIONADOS"');
+        
+        if(isset($request['from'])){
+            $lote = $lote->where('fecha','>', $request['from']);
+        }
+        if(isset($request['to'])){
+            $lote = $lote->where('fecha','<', $request['to']);
+        }
+        if(isset($request['filterOne'])){
+            if($request['filterOne']=='PRODUCTOR'){
+                if($request['filterTwo']!='todo'){
+                    $lote = $lote->where('productor','like', '%'.$request['filterTwo'].'%');
+                }
+            }
+            /*if($request['filterOne']=='VARIEDAD'){
+                if(isset($request['filterTwo'])){
+                    $lote = $lote->where('variedad','like', '%'.$request['filterTwo'].'%');
+                }
+            }*/
+        }
+
+        return response()->json($lote->get());
+    }
 
     public function getPieChartDataByPesoMes(Request $request){
         //return $request['filterOne'];
@@ -145,7 +167,7 @@ class ControllerReports extends Controller
 
         return response()->json($lote->get());
     }
-    public function getDataCosolidadoProcesosByFilters(Request $request){
+    /*public function getDataCosolidadoProcesosByFilters(Request $request){
         // return isset($request->filter['from']);
         $lote = \App\VResumenLote::orderBy('fecha')
         ->selectRaw('*')
@@ -157,23 +179,9 @@ class ControllerReports extends Controller
         if(isset($request->filter['to'])){
             $lote = $lote->where('fecha','<', $request->filter['to']);
         }
-        if(isset($request->filter['filterOne'])){
-            if($request->filter['filterOne']=='PRODUCTOR'){
-                if($request->filter['filterTwo']!='todo'){
-                    $lote = $lote->where('productor','like', '%'.$request->filter['filterTwo'].'%');
-                }
-            }
-            if($request->filter['filterOne']=='VARIEDAD'){
-                if(isset($request->filter['filterTwo'])){
-                    $lote = $lote->where('variedad','like', '%'.$request->filter['filterTwo'].'%');
-                }
-            }
-            
-            //$lote = $lote->where('fecha','>', $request->filter['from']);
-        }
         $lote = $lote->where('tipo_Mov','like','REC. FRUTA GRANEL A PROCESO');
 
         return response()->json($lote);
-    }
+    }*/
 
 }
