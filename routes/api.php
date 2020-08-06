@@ -22,6 +22,7 @@ Route::post('/login','AuthController@login');
 Route::post('/register','AuthController@register');
 Route::middleware('auth:api')->post('/logout','AuthController@logout');
 
+// apis recepcion
 Route::middleware('auth:api')->post('/getResumenLote','ControllerReports@getResumenLote');
 Route::middleware('auth:api')->post('/getPieChartData','ControllerReports@getPieChartData');
 Route::middleware('auth:api')->post('/getPieChartDataByCodVariedad','ControllerReports@getPieChartDataByCodVariedad');
@@ -30,6 +31,10 @@ Route::middleware('auth:api')->post('/getPieChartDataByPesoMes','ControllerRepor
 Route::middleware('auth:api')->post('/getDataCosolidadoProcesosByFilters','ControllerReports@getDataCosolidadoProcesosByFilters');
 Route::middleware('auth:api')->post('/getVariedades','ControllerReports@getVariedades');
 Route::middleware('auth:api')->post('/getProductores','ControllerReports@getProductores');
+
+//apis procesos
+Route::middleware('auth:api')->post('/getResumenProcesos','ControllerProcesos@getResumenProcesos');
+
 
 //Route::get('/getResumenLote','ControllerReports@getResumenLote');
 
