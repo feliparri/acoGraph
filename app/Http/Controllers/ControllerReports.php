@@ -68,21 +68,59 @@ class ControllerReports extends Controller
         return response()->json($lote);
     }
 
-    /*public function getPieChartDataByCodVariedad(Request $request){
-        // return isset($request->filter['from']);
-        $lote = \App\VResumenLote::groupBy('cod_variedad')
-        ->selectRaw('count(cod_variedad) as count, cod_variedad ')
-        ->get();
-
-        if(isset($request->filter['from'])){
-            $lote = $lote->where('fecha','>', $request->filter['from']);
+    public function getPieChartDataByCodVariedadInvGrpProductor(Request $request){
+        //return $request['filterOne'];
+        $lote = \App\VResumenLote::groupBy(['productor','variedad'])
+        ->selectRaw('variedad, productor,  sum(k_disp) as "KILOS_INVENTARIO"');
+        
+        if(isset($request['from'])){
+            $lote = $lote->where('fecha','>', $request['from']);
         }
-        if(isset($request->filter['to'])){
-            $lote = $lote->where('fecha','<', $request->filter['to']);
+        if(isset($request['to'])){
+            $lote = $lote->where('fecha','<', $request['to']);
+        }
+        if(isset($request['filterOne'])){
+            if($request['filterOne']=='PRODUCTOR'){
+                if($request['filterTwo']!='todo'){
+                    $lote = $lote->where('productor','like', '%'.$request['filterTwo'].'%');
+                }
+            }
+            if($request['filterOne']=='VARIEDAD'){
+                if(isset($request['filterTwo'])){
+                    $lote = $lote->where('variedad','like', '%'.$request['filterTwo'].'%');
+                }
+            }
         }
 
-        return response()->json($lote);
-    }*/
+        return response()->json($lote->get());
+    }
+
+    public function getPieChartDataByCodVariedadGrpProductor(Request $request){
+        //return $request['filterOne'];
+        $lote = \App\VResumenLote::groupBy(['productor','variedad'])
+        ->selectRaw('variedad, productor, sum(k_pesados) as "KILOS_RECEPCIONADOS"');
+        
+        if(isset($request['from'])){
+            $lote = $lote->where('fecha','>', $request['from']);
+        }
+        if(isset($request['to'])){
+            $lote = $lote->where('fecha','<', $request['to']);
+        }
+        if(isset($request['filterOne'])){
+            if($request['filterOne']=='PRODUCTOR'){
+                if($request['filterTwo']!='todo'){
+                    $lote = $lote->where('productor','like', '%'.$request['filterTwo'].'%');
+                }
+            }
+            if($request['filterOne']=='VARIEDAD'){
+                if(isset($request['filterTwo'])){
+                    $lote = $lote->where('variedad','like', '%'.$request['filterTwo'].'%');
+                }
+            }
+        }
+
+        return response()->json($lote->get());
+    }
 
     public function getPieChartDataByCodVariedadInv(Request $request){
         //return $request['filterOne'];
@@ -101,11 +139,11 @@ class ControllerReports extends Controller
                     $lote = $lote->where('productor','like', '%'.$request['filterTwo'].'%');
                 }
             }
-            /*if($request['filterOne']=='VARIEDAD'){
+            if($request['filterOne']=='VARIEDAD'){
                 if(isset($request['filterTwo'])){
                     $lote = $lote->where('variedad','like', '%'.$request['filterTwo'].'%');
                 }
-            }*/
+            }
         }
 
         return response()->json($lote->get());
@@ -128,11 +166,11 @@ class ControllerReports extends Controller
                     $lote = $lote->where('productor','like', '%'.$request['filterTwo'].'%');
                 }
             }
-            /*if($request['filterOne']=='VARIEDAD'){
+            if($request['filterOne']=='VARIEDAD'){
                 if(isset($request['filterTwo'])){
                     $lote = $lote->where('variedad','like', '%'.$request['filterTwo'].'%');
                 }
-            }*/
+            }
         }
 
         return response()->json($lote->get());

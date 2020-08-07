@@ -27,6 +27,8 @@ Route::middleware('auth:api')->post('/getResumenLote','ControllerReports@getResu
 Route::middleware('auth:api')->post('/getPieChartData','ControllerReports@getPieChartData');
 Route::middleware('auth:api')->post('/getPieChartDataByCodVariedad','ControllerReports@getPieChartDataByCodVariedad');
 Route::middleware('auth:api')->post('/getPieChartDataByCodVariedadInv','ControllerReports@getPieChartDataByCodVariedadInv');
+Route::middleware('auth:api')->post('/getPieChartDataByCodVariedadGrpProductor','ControllerReports@getPieChartDataByCodVariedadGrpProductor');
+Route::middleware('auth:api')->post('/getPieChartDataByCodVariedadInvGrpProductor','ControllerReports@getPieChartDataByCodVariedadInvGrpProductor');
 Route::middleware('auth:api')->post('/getPieChartDataByPesoMes','ControllerReports@getPieChartDataByPesoMes');
 Route::middleware('auth:api')->post('/getDataCosolidadoProcesosByFilters','ControllerReports@getDataCosolidadoProcesosByFilters');
 Route::middleware('auth:api')->post('/getVariedades','ControllerReports@getVariedades');
