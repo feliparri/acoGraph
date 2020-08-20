@@ -36,6 +36,8 @@ Route::middleware('auth:api')->post('/getProductores','ControllerReports@getProd
 
 //apis procesos
 Route::middleware('auth:api')->post('/getResumenProcesos','ControllerProcesos@getResumenProcesos');
+Route::middleware('auth:api')->post('/getReporteProcesos','ControllerProcesos@getReporteProcesos');
+Route::middleware('auth:api')->post('/getChartProcesosRendimiento','ControllerProcesos@getChartProcesosRendimiento');
 
 
 //Route::get('/getResumenLote','ControllerReports@getResumenLote');
