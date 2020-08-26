@@ -56,7 +56,7 @@ class ControllerProcesos extends Controller
                 if(isset($request['filterTwo'])){
                     $variedad = $request['filterTwo'];
                     foreach($this->getProductoresAll('todo') as $value) {
-                        array_push($arrProductor,[$value->productor=>array($this->getVariedadesAllByVariedad($value, $variedad))]);
+                        array_push($arrProductor,[$value->productor=>array($this->getVariedadesAllByVariedad($value->productor, $variedad))]);
                     }
                 }
             }
@@ -70,18 +70,139 @@ class ControllerProcesos extends Controller
         return response()->json($arrProductor);
     }
 
-    public function getChartProcesosRendimiento(){
-        $variedades = $this->getVariedadesAll();
-        $productores = $this->getProductoresAll('todo');
-        $arrChart = [];
-        foreach ($variedades as $key => $variedad) {
-            $arrChartVariedad = [];
-            foreach ($productores as $key => $productor) {
-                array_push($arrChartVariedad, array($productor->productor, $this->getVariedadesAllByVariedad($productor, $variedad['Variedad Timbrada'])));
+    public function getChartProcesosRendimiento(Request $request){
+        $variedades = null; // $this->getVariedadesAll();
+        $productores = null; // $this->getProductoresAll('todo');
+        if(isset($request['filterOne']) && $request['filterOne']!=null){
+            if($request['filterOne']=='PRODUCTOR'){
+                if($request['filterTwo']!='todo'){
+                    $variedades =  $this->getVariedadesAll();
+                    $productores = array('productor' => $request['filterTwo']);
+                }else{
+                    //dd('estamos en todo');
+                    $variedades = $this->getVariedadesAll();
+                    $productores = $this->getProductoresAll('todo');
+                }
             }
-            array_push($arrChart, array($variedad['Variedad Timbrada'], $arrChartVariedad));
+            if($request['filterOne']=='VARIEDAD'){
+                if(isset($request['filterTwo'])){
+                    $variedades = array('Variedad Timbrada' => $request['filterTwo']);
+                    $productores = $this->getProductoresAll('todo');
+                }
+            }
+        }else{
+            $variedades = $this->getVariedadesAll();
+            $productores = $this->getProductoresAll('todo');
         }
         
+        $arrChart = [];
+        if(isset($request['filterOne']) && $request['filterOne']!=null){
+            if($request['filterOne']=='PRODUCTOR'){
+                if(isset($request['filterTwo'])){
+                    if($request['filterTwo']!='todo'){
+                        foreach ($variedades as $key => $variedad) {
+                            //dd($productores['productor']);
+                            $arrChartVariedad = [];
+                            $data = $this->getVariedadesAllByVariedad($productores['productor'], $variedad['Variedad Timbrada']);
+                            //dd(count($data));
+                            if(count($data) > 0){
+                                foreach($data as $registros){
+                                    array_push($arrChartVariedad, array([
+                                        'productor' => $request['filterTwo'],
+                                        'rendimiento' => $registros['rendimiento'],
+                                        'variedad' => $registros['variedad']
+                                    ]));
+                                }
+                            } else {
+                                array_push($arrChartVariedad, array([
+                                    'productor' => $productores['productor'],
+                                    'rendimiento' => 0,
+                                    'variedad' => $variedad['Variedad Timbrada']
+                                ]));
+                               
+                            }
+                            array_push($arrChart, array($variedad['Variedad Timbrada'], $arrChartVariedad));
+                        }
+                    }else{
+                        foreach ($variedades as $key => $variedad) {
+                            $arrChartVariedad = [];
+                            foreach ($productores as $key => $productor) {
+                                $data = $this->getVariedadesAllByVariedad($productor->productor, $variedad['Variedad Timbrada']);
+                                if(count($data) > 0){
+                                    foreach($data as $registros){
+                                        array_push($arrChartVariedad, array([
+                                            'productor' => $productor->productor,
+                                            'rendimiento' => $registros['rendimiento'],
+                                            'variedad' => $variedad['Variedad Timbrada']
+                                        ]));
+                                    }
+                                }else{
+                                    array_push($arrChartVariedad, array([
+                                        'productor' => $productor->productor,
+                                        'rendimiento' => 0,
+                                        'variedad' => $variedad['Variedad Timbrada']
+                                    ]));
+                                }
+                            }
+                            array_push($arrChart, array($variedad['Variedad Timbrada'], $arrChartVariedad));
+                        }
+                    }
+                }
+            }
+
+            if($request['filterOne']=='VARIEDAD'){
+                if(isset($request['filterTwo'])){
+                    $arrChartVariedad = [];
+                    foreach ($productores as $key => $productor) {
+                        $data = $this->getVariedadesAllByVariedad($productor->productor, $request['filterTwo']);
+                        //dd($data);
+                        if(count($data) > 0){
+                            foreach($data as $registros){
+                                array_push($arrChartVariedad, array([
+                                    'productor' => $productor->productor,
+                                    'rendimiento' => $registros['rendimiento'],
+                                    'variedad' => $request['filterTwo']
+                                ]));
+                            }
+                        }else{ 
+                            array_push($arrChartVariedad, array([
+                                'productor' => $productor->productor,
+                                'rendimiento' => 0,
+                                'variedad' => $request['filterTwo']
+                            ]));
+                        }
+                    }
+                    array_push($arrChart, array($variedades['Variedad Timbrada'], $arrChartVariedad));
+                }
+            }
+        }else{
+            foreach ($variedades as $key => $variedad) {
+                $arrChartVariedad = [];
+                foreach ($productores as $key => $productor) {
+                    $data = $this->getVariedadesAllByVariedad($productor->productor, $variedad['Variedad Timbrada']);
+                    // dd(count($data));
+                    if(count($data) > 0){
+                        foreach($data as $registros){
+                            array_push($arrChartVariedad, array([
+                                'productor' => $productor->productor,
+                                'rendimiento' => $registros['rendimiento'],
+                                'variedad' => $variedad
+                            ]));
+                        }
+                    }else{
+                        array_push($arrChartVariedad, array([
+                            'productor' => $productor->productor,
+                            'rendimiento' => 0,
+                            'variedad' => $variedad
+                        ]));
+                        
+                    }
+                }
+                array_push($arrChart, array($variedad['Variedad Timbrada'], $arrChartVariedad));
+            }
+        }
+
+
         return response()->json($arrChart);
     }
 
@@ -153,7 +274,7 @@ class ControllerProcesos extends Controller
         if($variedad != 'todo' && $variedad!=null){
             $procesos->where('Variedad Timbrada','like', '%'.$variedad.'%');
         }
-        $procesos->where('productor','like', '%'.$productor->productor.'%');
+        $procesos->where('productor','like', '%'.$productor.'%');
         $procesos = $procesos->get()->all();
         return $procesos;
     }
