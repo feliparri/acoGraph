@@ -82,6 +82,26 @@ return [
             ]) : [],
         ],
 
+        'mysql_obras' => [
+            'driver' => 'mysql',
+            'url' => env('DATABASE_URL'),
+            'host' => '170.239.86.104',
+            'port' => '3306',
+            'database' => 'OBRAS',
+            'username' => 'produccion',
+            'password' => '8472',
+            'unix_socket' => env('DB_SOCKET', ''),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'strict' => true,
+            'engine' => null,
+            'options' => extension_loaded('pdo_mysql') ? array_filter([
+                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+            ]) : [],
+        ],
+
         'pgsql' => [
             'driver' => 'pgsql',
             'url' => env('DATABASE_URL'),

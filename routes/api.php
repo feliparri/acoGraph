@@ -39,6 +39,10 @@ Route::middleware('auth:api')->post('/getResumenProcesos','ControllerProcesos@ge
 Route::middleware('auth:api')->post('/getReporteProcesos','ControllerProcesos@getReporteProcesos');
 Route::middleware('auth:api')->post('/getChartProcesosRendimiento','ControllerProcesos@getChartProcesosRendimiento');
 
+//apis obras
+Route::middleware('auth:api')->post('/getResumenObras','ControllerObras@getResumenObras');
+Route::middleware('auth:api')->post('/getReporteObras','ControllerObras@getReporteObras');
+Route::middleware('auth:api')->post('/getChartAvanceObras','ControllerObras@getChartAvanceObras');
 
 //Route::get('/getResumenLote','ControllerReports@getResumenLote');
 
