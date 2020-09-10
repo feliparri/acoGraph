@@ -72,7 +72,7 @@ class ControllerObras extends Controller
     }
 
     public function getChartAvanceObras(Request $request){
-        $variedades = $this->getObrasAllByEstado('todo');
+        $variedades = $this->getObrasAllByEstadoEjecucion('todo');
         return $variedades;
     }
 
@@ -261,8 +261,17 @@ class ControllerObras extends Controller
         $obras = $obras->get();
         return $obras;
     }
-    private function getObrasAllByEstado($estado){
+    private function getObrasAllByEstadoEjecucion($estado){
         $estado = 'EJECUCION';
+        $obras = \App\Obras::selectRaw('estado, nro, inicio, termino, programa, `real`, desvio');
+        if($estado != 'todo' && $estado!=null){
+            $obras->where('estado','like', '%'.$estado.'%');
+        }
+        $obras = $obras->get()->all();
+        return $obras;
+    }
+
+    private function getObrasAllByEstado($estado){
         $obras = \App\Obras::selectRaw('estado, nro, inicio, termino, programa, `real`, desvio');
         if($estado != 'todo' && $estado!=null){
             $obras->where('estado','like', '%'.$estado.'%');
